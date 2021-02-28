@@ -5,6 +5,15 @@ import java.util.List;
 import java.util.Arrays;
 import java.text.*;
 
+//::::: Info ::::://
+/*
+ * 	Organization
+ * 		//::::: Constructors ::::://
+ * 		//::::: Getters & Setters ::::://
+ * 		//::::: Public Methods ::::://
+ * 		//::::: Computation Background ::::://
+ */
+
 public class BigInt {
 	private String number;
 	private boolean sign; 
@@ -34,11 +43,6 @@ public class BigInt {
 			System.out.println("Error: Input is invalid");
 		}
 	}//public BigInt(String number)
-
-
-
-	//::::: Getters & Setters ::::://
-
 	
 	//::::: Getters & Setters ::::://
 	
@@ -98,7 +102,7 @@ public class BigInt {
 		for(int i = 0; i<this.num.length(); i++) {
 			//nt temp = (Integer.valueOf(number.charAt(i)));
 			this.digits.add(Integer.valueOf(this.num.charAt(i)));
-			System.out.println("digit at i in setdigits " + String.valueOf(this.digits.get(i)-48));
+			//System.out.println("digit at i in setdigits " + String.valueOf(this.digits.get(i)-48));
 		}
 	}
 
@@ -106,7 +110,7 @@ public class BigInt {
 		return this.digits;
 	}
 	
-	//::::: Methods ::::://
+	//::::: Public Methods ::::://
 	
 	public String toString() {
 		if(this.sign == false) {
@@ -331,7 +335,7 @@ public class BigInt {
 		
 	}
 	
-	//::::: Utility ::::://
+	//::::: Utility Methods ::::://
 	
 	private static boolean validInput(String number){
 		/**
@@ -354,9 +358,6 @@ public class BigInt {
 		return true;	//if no errors are found
 		
 	}
-
-	
-	//::::: Used Utilities ::::://
 
 	private String findBiggerInt(BigInt A, BigInt B) {
     	if(A.digits.size() > B.digits.size()){
@@ -392,7 +393,7 @@ public class BigInt {
     	
 	}
 	
-	public String determineSign(String largerNum, BigInt bigInt) {
+	private String determineSign(String largerNum, BigInt bigInt) {
 		String sign;
 		if(largerNum == "A") {
 			sign = String.valueOf(this.sign);
@@ -424,12 +425,12 @@ public class BigInt {
 		//System.out.println("yList " + yList);
 		if(xList.size() > yList.size()) {
 			while(xList.size() > yList.size()) {
-				yList.add(0, Integer.valueOf(48));
+				yList.add(0, 48);
 			}
 		}
 		if(xList.size() < yList.size()) {
 			while(xList.size() < yList.size()) {
-				xList.add(0, Integer.valueOf(48));
+				xList.add(0, 48);
 			}
 		}
 		ArrayList<ArrayList<Integer>> xy = new ArrayList<ArrayList<Integer>>();
@@ -449,12 +450,12 @@ public class BigInt {
 		//System.out.println("y in eqlen() " + y);
 		if(x.size() > y.size()) {
 			while(x.size() > y.size()) {
-				y.add(0, 0);
+				y.add(0, 48);	//prior the 0 was 48. It may cause problems later
 			}
 		}
 		if(x.size() < y.size()) {
 			while(x.size() < y.size()) {
-				x.add(0, 0);
+				x.add(0, 48);	//prior the 0 was 48. It may cause problems later
 			}
 		}
 		ArrayList<ArrayList<Integer>> xy = new ArrayList<ArrayList<Integer>>();
@@ -462,6 +463,31 @@ public class BigInt {
 		return xy;
 		//return new ArrayList<Integer>[] {xList, yList};
 	} 
+	
+	private ArrayList<ArrayList<Integer>> equalLengthsForMultiplication(ArrayList<Integer> x, ArrayList<Integer> y) {
+		/**
+		 * Method that adds leading zeros to a numberList if it is shorter than the other numberList
+		 * The method does not mofify the lists from the objects but creates two new lists and returns a list
+		 * that can be accessed in the method that calls equalLengths()
+		 */
+		
+		//System.out.println("x in eqlen() " + x);
+		//System.out.println("y in eqlen() " + y);
+		if(x.size() > y.size()) {
+			while(x.size() > y.size()) {
+				y.add(0, 0);	//prior the 0 was 48. It may cause problems later
+			}
+		}
+		if(x.size() < y.size()) {
+			while(x.size() < y.size()) {
+				x.add(0, 0);	//prior the 0 was 48. It may cause problems later
+			}
+		}
+		ArrayList<ArrayList<Integer>> xy = new ArrayList<ArrayList<Integer>>();
+		xy.add(x); xy.add(y);
+		return xy;
+		//return new ArrayList<Integer>[] {xList, yList};
+	}
 	
 	private ArrayList<Integer> extendArray(ArrayList<Integer> x) {
 		/**
@@ -502,29 +528,47 @@ public class BigInt {
     	return number;
     }
 	
-	//UNUSED
-	/**
-	private void createArrayList() {
-		
-		 // Creates arrayList from string for constructor use only
-		
-	if(this.number.charAt(0) == '+' || this.number.charAt(0) == '-') {
-		this.sign = this.number.charAt(0);
-		this.setNumber(this.number.substring(1));
-	}
-	for(int i = 0; i < this.number.length(); i++) {
-		//char charNum = this.numString.charAt(i);    
-        int tempNum = (Character.getNumericValue(this.number.charAt(i)) - 48);		// changing value of the number
-        this.numberList.add(tempNum);
-		}
-	}
-	*/
-	/**
-	private static String compareTo(BigInt A, BigInt B) {
-		String largerNum = findBiggerInt(A, B);	//determines larger num
-	}*/
 	
-	private String convertArrayListToString(ArrayList<Integer> A) {
+	private ArrayList<Integer> normalize(ArrayList<Integer> A){
+		ArrayList<Integer> B = new ArrayList<Integer>();
+		String str = "";
+		int carry = 0;
+		A = reverseArrayList(A);
+		System.out.println("A in normalize " + A);
+		for(int i = 0; i < A.size(); i++) {
+			//	 loop to normalize arrayLisut integer
+        	int a = A.get(i), b;
+        	b = a + carry;
+        	carry = 0;
+        	
+        	if(b>9) {
+        		carry = b / 10;
+        		int d = b % 10;
+        		str = str + Integer.toString(d) + ",";
+        		//C.add(d);
+        		//System.out.println("C in add carry" + C);
+        	}
+        	else {
+        		str = str + Integer.toString(b) + ",";
+        		//C.add(c);
+        		//System.out.println("C in add " + C);
+        	}  	
+    	}
+		//System.out.println("Str " + str);
+    	ArrayList<String> arrayList = new ArrayList<String>    (Arrays.asList(str.split(",")));
+    	ArrayList<Integer> newNum = new ArrayList<Integer>();
+    	for(String fav:arrayList){
+    	    newNum.add(Integer.parseInt(fav.trim()));
+    	}
+    	//System.out.println("newNum " + newNum);
+    	String D = convertArrayListToString(B);
+		
+		return newNum; 
+	}
+	
+	//::::: Computation Background ::::://
+	
+ 	private String convertArrayListToString(ArrayList<Integer> A) {
     	String str = "";
     	for(int i = 0; i<A.size(); i++) {
     		str = str + String.valueOf(A.get(i));
@@ -536,7 +580,9 @@ public class BigInt {
 	
 	//::::: Computation Background ::::://
 	
-	private String addControl(BigInt A, BigInt B){
+	
+ 	
+ 	private String addControl(BigInt A, BigInt B){
     /** not used just iuncommented method to hide code	
     	 * 	Return string contain with proper sign at the front
     	 
@@ -625,7 +671,8 @@ public class BigInt {
     }
 	
 	
-	private String addition(ArrayList<Integer> A, ArrayList<Integer> B, BigInt bigInt) {
+	
+ 	private String addition(ArrayList<Integer> A, ArrayList<Integer> B, BigInt bigInt) {
     	/**
     	 * @param ArrayList<Integer> A, ArrayList<Integer> B
     	 * @returns ArrayList<Integer> C
@@ -652,9 +699,9 @@ public class BigInt {
     	int carry = 0;
     	for(int i = 0; i < arraySize; i++) {
         	int a = x.get(i)-48, b = y.get(i)-48, c;
-        	System.out.println("a in add " + a);
-        	System.out.println("b in add " + b);
-        	System.out.println("carry " + carry);
+        	//System.out.println("a in add " + a);
+        	//System.out.println("b in add " + b);
+        	//System.out.println("carry " + carry);
         	c = a + b + carry;
         	carry = 0;
         	if(c>9) {
@@ -674,82 +721,8 @@ public class BigInt {
     	return D;
     }
 	
-	private ArrayList<Integer> addition(ArrayList<Integer> E, ArrayList<Integer> F) {
-    	/**
-    	 * @param ArrayList<Integer> A, ArrayList<Integer> B
-    	 * @returns ArrayList<Integer> C
-    	 * computes A + B
-    	 * 
-    	 * THIS ADDITION METHOD IS FOR MULTIPLICATION CORRECTION ONLY
-    	 */
-		//determine sign	
-		//greater value does this -- String largerNum = findBiggerInt(this, );
-		// sign findss this in add main -- String sign = determineSign(largerNum, B);
-		//if larger number is negative the sum will be a negative number
-		//ArrayList<ArrayList<Integer>> xy = equalLengths(A, B);
-		//ArrayList<Integer> x = xy.get(0);
-		//ArrayList<Integer> y = xy.get(1);
-		
-		//System.out.println("xy A x " + x);
-		//System.out.println("xy B y " + y);
-    		
-    	///if(x.get(x.size()-1) >= 5 && y.get(y.size()-1) >= 5) {
-    	//	C = extendArray(C);
-    	//}
-    	//will hold the sum of the two arrays
-    	
-		/*
-		int arraySize;	//find arrayList with more elements
-    	if(C.size() > D.size()) {
-    		arraySize = C.size();}	//compare the array sizes
-    	else {
-    		arraySize = D.size();}
-    	
-    	ArrayList<ArrayList<Integer>> xy = equalLengths(D, C);	//set the number of elements in each arrayList equal to each other
-    	ArrayList<Integer> X = xy.get(0);	System.out.println("X" + X);
-    	ArrayList<Integer> Y = xy.get(1);	System.out.println("Y" + Y);
-    	
-    	ArrayList<Integer> Z = new ArrayList<Integer>();	//initialize arrayList to hold to normalized sum of original arrayLists C and D
-
-    	//reverse the arrays for computation
-    	X = reverseArrayList(X);	System.out.println("rev X" + X);//reverse array 1
-    	Y = reverseArrayList(Y);	System.out.println("rev Y" + Y);//reverse array 2
-    	
-    	int carry = 0;
-    	int needMore = 0;
-    	//if(D.get(D.size()-1) >= 5 && C.get(C.size()-1) >= 5) {
-    	//	arraySize = arraySize + 1;
-    	//}
-    	System.out.println("y.Size() " + Y.size());
-    	for(int i = 0; i < Y.size(); i++) {
-    		System.out.println("Executed");
-    		int x = X.get(i), y = Y.get(i), z;
-            
-        	z = x + y + carry;
-        	System.out.println("z " + z);
-            carry = 0;	//reset carry
-            
-            //E.ensureCapacity(E.size() + 1);
-            //System.out.println("C before if statement in addition : " + C);
-            if(z > 9) {
-            System.out.println("Executed");
-            	carry = z/10;
-            	z = z%10;
-            	Z.add(z);
-            }
-            else {
-            	Z.add(Z.size(), z+Z.get(i+1));
-            	System.out.println("Z in addition " + Z);
-            }
-    	}
-    	//C = normalizeArray(C);
-    	Z.add(carry);
-    	Z = reverseArrayList(Z);
-    	System.out.println("Z in addition " + Z);
-    	//String D = convertArrayListToString(C);
-    	//I want this function to return a string
-    	return Z;*/
-		
+	
+ 	private ArrayList<Integer> addition(ArrayList<Integer> E, ArrayList<Integer> F) {
 		/**
     	 * @param ArrayList<Integer> A, ArrayList<Integer> B
     	 * @returns ArrayList<Integer> C
@@ -757,7 +730,7 @@ public class BigInt {
     	 */
 		//determine sign	
 		//greater value does this -- String largerNum = findBiggerInt(this, );
-		// sign findss this in add main -- String sign = determineSign(largerNum, B);
+		//sign findss this in add main -- String sign = determineSign(largerNum, B);
 		//if larger number is negative the sum will be a negative number
 		ArrayList<ArrayList<Integer>> xy = equalLengths(E, F);
 		ArrayList<Integer> x = xy.get(0);
@@ -812,7 +785,107 @@ public class BigInt {
     	return newNum;
     }
 	
-	private String subtraction(ArrayList<Integer> A, ArrayList<Integer> B, BigInt bigInt) {
+	
+ 	
+ 	private ArrayList<Integer> additionForMultiplication(ArrayList<Integer> E, ArrayList<Integer> F) {
+		/**
+    	 * @param ArrayList<Integer> A, ArrayList<Integer> B
+    	 * @returns ArrayList<Integer> C
+    	 * computes A + B
+    	 */
+		//determine sign	
+		//greater value does this -- String largerNum = findBiggerInt(this, );
+		//sign findss this in add main -- String sign = determineSign(largerNum, B);
+		//if larger number is negative the sum will be a negative number
+ 		ArrayList<Integer> sum = new ArrayList<Integer>();
+ 		
+ 		ArrayList<ArrayList<Integer>> xy = equalLengthsForMultiplication(E, F);
+		ArrayList<Integer> x = xy.get(0);
+		ArrayList<Integer> y = xy.get(1);
+		System.out.println("x " + x);
+		System.out.println("y " + y);
+		boolean zero = true;
+		
+		while(zero==true) {
+			if(x.size() == 1) {
+				zero = false;
+				break;
+			}
+			if (x.get(0) == 0 && y.get(0) == 0) {
+				
+				x.remove(0);
+				y.remove(0);
+			}else {
+				zero = false;
+				break;
+			}
+		}
+    	String str = "";
+    	//reverse the arrays for computation
+    	//x = reverseArrayList(x);	//reverse array 1
+    	//y = reverseArrayList(y);	//reverse array 2
+    	//System.out.println("rev x " + x);
+		//System.out.println("rev y " + y);
+    	int carry = 0;
+    	
+    	for(int i = x.size()-1; i>=0; i--) {
+        	int a = x.get(i), b = y.get(i), c;
+        	//System.out.println("a in add " + a);
+        	//System.out.println("b in add " + b);
+        	//System.out.println("carry " + carry);
+        	c = a + b;
+        	//System.out.println("c " + c);
+        	if(c>9) {
+        		carry = c / 10;
+        		int d = c % 10;
+        		sum.add(0, d);
+        		try{
+        			int temp = (x.get(i-1));
+        			int carryTemp = temp + carry;
+        			x.set(i-1, carryTemp);
+        		}catch(java.lang.IndexOutOfBoundsException IndexOutOfBounds) {
+        			
+        			System.out.println("Error " + carry);
+        			System.out.println("Error sum " + sum);
+        			//	error will occur if x has been iterated through. The carry will be added to the end of the array 
+        			sum.add(0, carry);
+        			System.out.println("Post error sum " + sum);
+        		}
+        		//String temp = Integer.toString(d) + ",";
+        		//str += temp;
+        		//System.out.println("C in add carry" + C);
+        	}
+        	else {
+        		sum.add(0, c);
+        		//str = str + Integer.toString(c) + ",";
+        		//System.out.println("C in add " + C);
+        	}
+        	//System.out.println("i " + i);
+    	}
+    	//	trim leading zeros?
+    	if(sum.size() > 1 && sum.get(0) == 0) {
+    		sum.remove(0);
+    	}
+    	// add additional carry if it exists
+    	//if(carry>0) {
+    	//	sum.add
+    	//}
+    	//System.out.println("icarry " + carry);
+    	//System.out.println("Str " + str);
+    	//C = normalizeArray(C);
+    	//System.out.println("Str " + str);
+    	//ArrayList<String> arrayList = new ArrayList<String>    (Arrays.asList(str.split(",")));
+    	//ArrayList<Integer> newNum = new ArrayList<Integer>();
+    	//for(String fav:arrayList){
+    	//    newNum.add(Integer.parseInt(fav.trim()));
+    	//}
+    	//sum = reverseArrayList(sum);
+    	System.out.println("sum " + sum);
+    	//I want this function to return a string
+    	return sum;
+    }
+ 	
+ 	private String subtraction(ArrayList<Integer> A, ArrayList<Integer> B, BigInt bigInt) {
     	/**
     	 * @param ArrayList<Integer> A, ArrayList<Integer> B
     	 * @returns ArrayList<Integer> C
@@ -821,8 +894,8 @@ public class BigInt {
 		System.out.println("A at start of sub. a should equal x " + A);
 		System.out.println("B at start of sub. a should equal y " + B);
 		ArrayList<ArrayList<Integer>> xy = equalLengths(A, B);
-		ArrayList<Integer> x = xy.get(0);	System.out.println("x in subtraction " + x);
-		ArrayList<Integer> y = xy.get(1);	System.out.println("y in subtraction " + y);
+		ArrayList<Integer> x = xy.get(0);	//System.out.println("x in subtraction " + x);
+		ArrayList<Integer> y = xy.get(1);	//System.out.println("y in subtraction " + y);
 		
     	ArrayList<Integer> C = new ArrayList<Integer>();	//will hold the difference of the two arrays
     	int arraySize; 
@@ -831,8 +904,8 @@ public class BigInt {
     	else {
     		arraySize = A.size();}
     	//reverse the arrays for computation
-    	x = reverseArrayList(x);	System.out.println("x in subtraction after reverse " + x + " x.size " + x.size()); //reverse array 1
-    	y = reverseArrayList(y);	System.out.println("y in subtraction after reverse " + y + " y.size " + y.size()); //reverse array 2
+    	x = reverseArrayList(x);	//System.out.println("x in subtraction after reverse " + x + " x.size " + x.size()); //reverse array 1
+    	y = reverseArrayList(y);	//System.out.println("y in subtraction after reverse " + y + " y.size " + y.size()); //reverse array 2
     	for(int i = 0; i < arraySize; i++) {
     	int a = x.get(i)-48, b = y.get(i)-48, c;
     		//System.out.println("a (xAt(i)) in subtraction loop " + a + " rep " + (i+1));
@@ -852,214 +925,119 @@ public class BigInt {
     	
     	}
     	C = reverseArrayList(C);
-    	C = reverseArrayList(C);
-    	System.out.println("C in subtraction " + C);
+    	//C = reverseArrayList(C);
+    	//System.out.println("C in subtraction " + C);
     	String D = convertArrayListToString(C);
+    	//System.out.println("D " + D);
     	return D;
 	}
 	
-	private String multiplication(ArrayList<Integer> X, ArrayList<Integer> Y, BigInt bigInt) {
+	private String multiplication(ArrayList<Integer> arrayOne, ArrayList<Integer> arrayTwo, BigInt bigInt) {
     	//System.out.println("Ran Multiplication");
 		/**
     	 * @param ArrayList<Integer> A, ArrayList<Integer> B
     	 * @returns ArrayList<Integer> C
     	 * computes A + B
     	 */
-		//determine sign	
-		//greater value does this -- String largerNum = findBiggerInt(this, );
-		// sign findss this in add main -- String sign = determineSign(largerNum, B);
-		//if larger number is negative the sum will be a negative number
-		/*ArrayList<ArrayList<Integer>> xy = equalLengths(this, bigInt);
-		ArrayList<Integer> x = xy.get(0);
-		ArrayList<Integer> y = xy.get(1);
-		System.out.println(x);
-		System.out.println(y); */
-    	/*
-		int arraySize; 
-    	if(B.size() > A.size()) {
-    		arraySize = B.size();}	//compare the array sizes
-    	else {
-    		arraySize = A.size();}
-    	ArrayList<Integer> C = new ArrayList<Integer>(A.size() + B.size() + 1);
-    	ArrayList<Integer> D = new ArrayList<Integer>(A.size() + B.size() + 1);//will hold the sum of the two arrays
-    	System.out.println(C.size());
-    	System.out.println(D.size());
-    	//reverse the arrays for computation
-    	A = reverseArrayList(A);	//reverse array 1
-    	B = reverseArrayList(B);	//reverse array 2
-    	int carry = 0;
-    	int reps = 0;
-    	for(int i = 0; i < A.size(); i++) {
-    		int a = A.get(i)-48;
-    		for(int j = 0; j < B.size(); j++) {
-    			int b = B.get(j)-48, c;
-    			c = (a * b) + carry;
-    			System.out.println("a * b = C -> " + a + " * " + b + " = " + c);
-    			//System.out.println("a in multiply " + a);
-            	//System.out.println("b in multiply " + b);
-            	//System.out.println("carry " + carry);  	
-    			carry = 0;
-    			if(c>9) {
-            		carry = c/10;
-            		System.out.println("carry = c/10 : " + carry);
-            		c = c%10;
-            		System.out.println("c = c%10 : " + c);
-            		C.add(i, c);
-            	}
-    			else {
-            		C.add(i, c);
-            	}  
-    			System.out.println("C after round " + C);
-        	}
-    	}
-    		//C = reverseArrayList(C);
-    		//for(int g=0; g < C.size(); g++) {
-    		//	D.add(Integer.valueOf(C.get(g)));
-    		//}
-    		System.out.println("D after addition: " + D);
-    		System.out.println("C in multiplication after reverseal before addition: " + C);
-    		D = addition(D, C);
-    		System.out.println("D after addition: " + D);
-    		C.clear();
-    		reps++;
-    		for(int k = 0; k<reps; k++) {
-    			C.add(0, Integer.valueOf(0));
-    		}
-    	*/
-    	//C = normalizeArray(C);
-    	//C = reverseArrayList(C);
-    	//System.out.println("D in multiplication " + D);
-    	//String E = convertArrayListToString(D);
-    	//I want this function to return a string
+		//NEW IDEA START
+		//System.out.println("A at start of multi. a should equal x " + A);
+		//System.out.println("B at start of multi. a should equal y " + B);
 		
-		ArrayList<ArrayList<Integer>> AB = equalLengths(this, bigInt);		//sets array lengths equal to each other
-		ArrayList<Integer> A = AB.get(0);	//Initializes array
-		ArrayList<Integer> B = AB.get(1);	//Initializes array
-		int carry = 0;	//sed in loop to normalize C
-		A = reverseArrayList(A);	//System.out.println("A in Multiplicatiopn " + A);//reverse arrayLists A and B
-		B = reverseArrayList(B);	//System.out.println("B in Multiplicatiopn " + B);
+		//	define the accumulator and the answer array lists
+		//	reverse both array lists for easier for loop manipulation 
+		//	iterate through the first number
+		//	if the value is equal to 0
+		// 		skip the second for loop and multiply the magnitude by 10
+		//	else 
+		//		iterate through the second number
+		//		multiply each index by the outer loop value
+		//		add each of the multiples to the accumulator
+		//		
+		//		add the accumulator to to the answer
 		
-		ArrayList<Integer> C = new ArrayList<Integer>();	//System.out.println("C in Multiplicatiopn " + C);//Initialize arrayList C
-		ArrayList<Integer> D = new ArrayList<Integer>();	//System.out.println("D in Multiplicatiopn " + D);
-		/* Try Catch block to hold code that iterates through both arrays and multiplies the two numbers together then normalizes the number*/
-		try {
-			for(int i=0; i<A.size(); i++) {
-				for(int j=0;j<B.size();j++) {
-					int a = A.get(i)-48;int b = B.get(j)-48;
-					int c = a * b;
-					C.add(C.size(), c);
-				}
+		ArrayList<Integer> A = new ArrayList<Integer>();
+		ArrayList<Integer> B = new ArrayList<Integer>();
+		
+		if(arrayOne.size()>arrayTwo.size() || arrayOne.size()==arrayTwo.size()) {
+			A = arrayOne;
+			B = arrayTwo;
+		}
+		else {
+			B = arrayOne;
+			A = arrayTwo;
+		}
+		ArrayList<Integer> accumulator = new ArrayList<Integer>();
+		ArrayList<Integer> answer = new ArrayList<Integer>();
+		int factorOfNum = 1;
+		int numOfFactors = 0;
+		System.out.println("A " + A);
+		System.out.println("B " + B);
+		for(int i=A.size()-1; i>=0; i--) {	//1111 * 22 ->
+			//	 loop to iterate through first number
+			int a = A.get(i)-48;
+			
+			if(a == 0 && A.size() > 1) {
+				System.out.println("if error");
 				
-				for(int k = 0; k<i; k++) {
-					C.add(0, 0);
-				}
-				D = reverseArrayList(D);
-				for(int l = C.size() - D.size()+1; l < C.size(); l++) {
-					D.add(0,0);
-				}
-				D = reverseArrayList(D);
-				//System.out.println("D" + D);
-				//C = reverseArrayList(C);
-				//System.out.println("Reversed C " + C);
-				//C = reverseArrayList(C);
-				//System.out.println("C" + C);
-				//D = reverseArrayList(D);
-				for(int q = 0; q<D.size(); q++) {
-					/* Should add the two array s together if it works properly*/
-					D.set(q, D.get(q) + C.get(q));
-				}
-				//System.out.println("Sum D " + D);
-				
-				
-				for(int g = i; g<C.size(); g++) {	//Iterate through the bottom number of multiplication
-					if(C.size()>D.size() && D.size() == 0) {	
-						// should only iterate on the first time through -> creates D which is the sum of the two numbers
-						for(int m=0;m<C.size();m++) {
-							D.add(m, C.get(g));
-							//System.out.println("First if block executed");
-							g++;
-						}
-					}
-					else if(C.size()>0 && D.size()>0) {
-						int size;
-						int dif;
-						/*if(C.size() > D.size()) {
-							size = C.size();
-							dif = size - D.size();
-						}
-						if(C.size() < D.size()) {
-							size = D.size();
-							dif = size - C.size();
-						}
-						else {
-							size = C.size();
-							dif = size - D.size();
-						}*/
-						for(int n = g ; n < C.size(); n++) {
-							try {
-								if ((D.size()) - n==0) {
-									D.add(g, C.get(n-1));
-									//System.out.println("Executed");
-									
-								}else {
-									/* D.set(g, C.get(n-1) + D.get(n)); // -> commented out because correct number was already reached
-									 * with above methods
-									 */
-								}
-								//System.out.println("D at end of try " + D);	
-							}catch(java.lang.IndexOutOfBoundsException IndexOutOfRange) {
-								D.add(g, C.get(g-1) + D.get(g));
-								//System.out.println("D in inner catch " + D);
-							}
-							//System.out.println("D at end of loop " + D);
-						}
-					System.out.println("Multiplication for loop executed " + i + " times");
-					}
+				factorOfNum = factorOfNum * 10;
+				numOfFactors += 1;
+				break;
+			}
+			else {
+				for(int j = B.size()-1; j>=0; j--) {				
+					//	loop to iterate through second number
 					
+					int b = B.get(j)-48;
+					int c;
+					System.out.println("a " + a);
+					
+					//System.out.println("a " + a);
+					//System.out.println("b " + b);
+					c = a * b;
+					//System.out.println("c " + c);
+					accumulator.add(0, c);	//	adds to the front of the arrayList	
 				}
-				System.out.println(D);
-				//D = addition(D, C);
-				C.clear();
-				for(int k = 0; k<i; k++) {
-					C.add(0, 0);
-				}
-			for(int p = 0; p < C.size(); p++) {
-				D.set(p, D.get(p) + C.get(p));
-			}
-			//System.out.println("D at end of try " + D);
-			}
-		}catch(java.lang.IndexOutOfBoundsException IndexOutOfRange) {
-			System.out.println("Catch Error In Multiplication Method");
-			//System.out.println("D in outer catch " + D);
-		}
-		
-		//need to normalize array
-		for(int w = 0; w<D.size(); w++) {
-			/*
-			 * Method will normalize arrayList D and carry numbers greater than 9 to the next index
-			 */
-			//D = reverseArrayList(D);
-			if(D.get(w)>9) {
-				try {
-					int carryVal = D.get(w)/10;
-					int newVal = D.get(w)%10;
-					D.set(w, newVal);
-					try {
-						D.set(w+1, D.get(w+1) + carryVal);
-					}catch(java.lang.IndexOutOfBoundsException IndexOutOfRange) {
-						D.add(0,0);
-						D.set(w+1, D.get(w+1) + carryVal);
+				if(numOfFactors > 0) {
+					//accumulator = reverseArrayList(accumulator);
+					for(int k = 0; k<numOfFactors; k++) {
+						/*	loop to add zeros to the back of the array if the factor of the multiplication digit
+						 *	digit is greater that 0		*/
+						//System.out.println("accumulator in adding zeros b4" + accumulator);
+						accumulator.add(0);
+						
+						
 					}
-				}catch(java.lang.IndexOutOfBoundsException IndexOutOfRange) {
-					D.add(0,0);
+					//accumulator = reverseArrayList(accumulator);
 				}
+				answer = additionForMultiplication(answer, accumulator);
+				//System.out.println("after answer " + answer);
+				accumulator.clear();
 			}
+			
+			//System.out.println("after for loop accumulator " + accumulator);
+			//accumulator = reverseArrayList(accumulator);	//reverse back to proper format
+			
+			//System.out.println("accumulator after zeros " + accumulator);
+			factorOfNum = factorOfNum * 10;
+			numOfFactors += 1;
+			//accumulator = normalize(accumulator);
+			//System.out.println("accumulator " + accumulator);
+			//normalizse the numbers in the arrayList aka compute the carry
+			//System.out.println("before answer " + answer);
+			//accumulator = reverseArrayList(accumulator);
+			//System.out.println("before accumulator " + accumulator);
+			
 		}
-		D = reverseArrayList(D);
+			
+		//System.out.println("D after multi " + D);
 		//System.out.println("D at end of multi " + D);
 		//System.out.println(C);
-		String E = convertArrayListToString(D);
-    	return E;
+		//System.out.println("answer " + answer);
+		//answer = reverseArrayList(answer);
+		String answerStr = convertArrayListToString(answer);
+		System.out.println(answerStr);
+    	return answerStr;
+    	
     }
 	
 	
