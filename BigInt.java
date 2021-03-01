@@ -14,7 +14,7 @@ import java.text.*;
  * 		//::::: Computation Background ::::://
  */
 
-public class BigInt {
+public class BigInt implements Comparable<BigInt>{
 	private String number;
 	private boolean sign; 
 	private ArrayList<Integer> digits = new ArrayList<Integer>();
@@ -139,6 +139,7 @@ public class BigInt {
 		//System.out.println("bigint. sign " + bigInt.sign);
 		/**
 		 * add : read in bigInt
+		 * 
 		 */
 		while (valueFound == false){ 
 			/**		
@@ -958,6 +959,9 @@ public class BigInt {
 		ArrayList<Integer> A = new ArrayList<Integer>();
 		ArrayList<Integer> B = new ArrayList<Integer>();
 		
+		BigInt answerObject = new BigInt("0");
+		
+		
 		if(arrayOne.size()>arrayTwo.size() || arrayOne.size()==arrayTwo.size()) {
 			A = arrayOne;
 			B = arrayTwo;
@@ -972,31 +976,34 @@ public class BigInt {
 		int numOfFactors = 0;
 		System.out.println("A " + A);
 		System.out.println("B " + B);
-		for(int i=A.size()-1; i>=0; i--) {	//1111 * 22 ->
+		
+		A = reverseArrayList(A);
+		B = reverseArrayList(B);
+		
+		System.out.println("revA " + A);
+		System.out.println("revB " + B);
+		
+		for(int i = 0; i < A.size(); i++) {	//1111 * 22 ->
 			//	 loop to iterate through first number
 			int a = A.get(i)-48;
-			
-			if(a == 0 && A.size() > 1) {
-				System.out.println("if error");
-				
-				factorOfNum = factorOfNum * 10;
-				numOfFactors += 1;
-				break;
-			}
-			else {
-				for(int j = B.size()-1; j>=0; j--) {				
+				for(int j = 0; j< B.size(); j++) {				
 					//	loop to iterate through second number
 					
 					int b = B.get(j)-48;
 					int c;
 					System.out.println("a " + a);
 					
-					//System.out.println("a " + a);
-					//System.out.println("b " + b);
+					
+					System.out.println("b " + b);
+					
+					
 					c = a * b;
-					//System.out.println("c " + c);
-					accumulator.add(0, c);	//	adds to the front of the arrayList	
+					accumulator.add(0, c);
+					System.out.println("c " + c);
+					
 				}
+				
+				
 				if(numOfFactors > 0) {
 					//accumulator = reverseArrayList(accumulator);
 					for(int k = 0; k<numOfFactors; k++) {
@@ -1009,10 +1016,25 @@ public class BigInt {
 					}
 					//accumulator = reverseArrayList(accumulator);
 				}
-				answer = additionForMultiplication(answer, accumulator);
+				System.out.println("accumulator before normalize " + accumulator);
+				accumulator = normalizeArrayList(accumulator);
+				System.out.println("accumulator after normalize " + accumulator);
+				
+				String accumulatorString = convertArrayListToString(accumulator);
+				BigInt accumulatorObject = new BigInt(accumulatorString);
+				
+				try {
+					answerObject = answerObject.add(accumulatorObject);
+				}catch(java.lang.Error ObjectNotInitialized) {
+					// first iteration through loop, answer object not created
+					answerObject = new BigInt(accumulatorString);
+				}
+					
+				
+				
+				//answer = additionForMultiplication(answer, accumulator);
 				//System.out.println("after answer " + answer);
 				accumulator.clear();
-			}
 			
 			//System.out.println("after for loop accumulator " + accumulator);
 			//accumulator = reverseArrayList(accumulator);	//reverse back to proper format
@@ -1034,20 +1056,57 @@ public class BigInt {
 		//System.out.println(C);
 		//System.out.println("answer " + answer);
 		//answer = reverseArrayList(answer);
-		String answerStr = convertArrayListToString(answer);
+		String answerStr = answerObject.toString();
 		System.out.println(answerStr);
     	return answerStr;
     	
     }
 	
+	private ArrayList<Integer> normalizeArrayList(ArrayList<Integer> A){
+		// 	arrayList will come in default format of [1,2,3] -> 123
+		A = reverseArrayList(A);
+		//	A is not [3,2,1]
+		ArrayList<Integer> newArray = new ArrayList<Integer>();
+		for(int i = 0; i<A.size();i++){
+			int num = A.get(i);
+			int carry = 0;
+			if(num>9) {
+				carry = num / 10;
+				int d = num%10;
+				newArray.add(d);
+				try{
+	    			int temp = (A.get(i+1));
+	    			int carryTemp = temp + carry;
+	    			A.set(i+1, carryTemp);
+	    		}catch(java.lang.IndexOutOfBoundsException IndexOutOfBounds) {
+	    			
+	    			System.out.println("Error " + carry);
+	    			System.out.println("Error sum " + A);
+	    			//	error will occur if x has been iterated through. The carry will be added to the end of the array 
+	    			A.add(carry);
+	    			System.out.println("Post error sum " + A);
+	    		}
+	    		//String temp = Integer.toString(d) + ",";
+	    		//str += temp;
+	    		//System.out.println("C in add carry" + C);
+	    	}
+	    	else {
+				newArray.add(num);	//	adds to the front of the arrayList	
+	    		//str = str + Integer.toString(c) + ",";
+	    		//System.out.println("C in add " + C);
+			}
+			
+		}
+		newArray = reverseArrayList(newArray);
+	return newArray;
+	}
 	
 	
-	
-	
-	
-	
-	
-	
+	public void times(BigInt x) {
+		char[] xChars = x.chars();
+		
+	}
+
 	
 	
 	
