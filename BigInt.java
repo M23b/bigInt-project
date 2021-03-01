@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.text.*;
+import java.math.BigInteger;
 
 //::::: Info ::::://
 /*
@@ -14,7 +15,7 @@ import java.text.*;
  * 		//::::: Computation Background ::::://
  */
 
-public class BigInt implements Comparable<BigInt>{
+public class BigInt{
 	private String number;
 	private boolean sign; 
 	private ArrayList<Integer> digits = new ArrayList<Integer>();
@@ -43,6 +44,11 @@ public class BigInt implements Comparable<BigInt>{
 			System.out.println("Error: Input is invalid");
 		}
 	}//public BigInt(String number)
+	
+	 private BigInt()
+	    {
+//	        Private constructor doing noting - for inner use.
+	    }
 	
 	//::::: Getters & Setters ::::://
 	
@@ -334,6 +340,48 @@ public class BigInt implements Comparable<BigInt>{
 		//System.out.println("Sum after calculations: " + sum);
 		return new BigInt(sum);	
 		
+	}
+	
+	public BigInt multiplyWithBIGINT(BigInt bigInt) {
+		//used just to check answers
+		BigInteger localThis = new BigInteger(this.number);
+		BigInteger input = new BigInteger(bigInt.number);
+		
+		BigInteger newNumber = localThis.multiply(input);
+		String numString = newNumber.toString();
+		System.out.println("numString " + numString);
+		
+		//byte[] numString = newNumber.toByteArray();
+		//String(numString);
+		return new BigInt(numString);
+	}
+	
+	public BigInt divideByWithBIGINT(BigInt bigInt) {
+		//used just to check answers
+		BigInteger localThis = new BigInteger(this.number);
+		BigInteger input = new BigInteger(bigInt.number);
+		
+		BigInteger newNumber = localThis.divide(input);
+		String numString = newNumber.toString();
+		System.out.println("numString " + numString);
+		
+		//byte[] numString = newNumber.toByteArray();
+		//String(numString);
+		return new BigInt(numString);
+	}
+
+	public BigInt modulusWithBIGINT(BigInt bigInt) {
+		//used just to check answers
+		BigInteger localThis = new BigInteger(this.number);
+		BigInteger input = new BigInteger(bigInt.number);
+		
+		BigInteger newNumber = localThis.mod(input);
+		String numString = newNumber.toString();
+		System.out.println("numString " + numString);
+		
+		//byte[] numString = newNumber.toByteArray();
+		//String(numString);
+		return new BigInt(numString);
 	}
 	
 	//::::: Utility Methods ::::://
@@ -959,7 +1007,7 @@ public class BigInt implements Comparable<BigInt>{
 		ArrayList<Integer> A = new ArrayList<Integer>();
 		ArrayList<Integer> B = new ArrayList<Integer>();
 		
-		BigInt answerObject = new BigInt("0");
+		BigInt answerObject = new BigInt();
 		
 		
 		if(arrayOne.size()>arrayTwo.size() || arrayOne.size()==arrayTwo.size()) {
@@ -991,18 +1039,17 @@ public class BigInt implements Comparable<BigInt>{
 					
 					int b = B.get(j)-48;
 					int c;
-					System.out.println("a " + a);
-					
-					
-					System.out.println("b " + b);
 					
 					
 					c = a * b;
 					accumulator.add(0, c);
-					System.out.println("c " + c);
+					System.out.println("a " + a + "\t" + "b " + b + "\t" +"c " + c + "\t");
 					
 				}
 				
+				System.out.println("accumulator before normalize " + accumulator);
+				accumulator = normalizeArrayList(accumulator);
+				System.out.println("accumulator after normalize " + accumulator);
 				
 				if(numOfFactors > 0) {
 					//accumulator = reverseArrayList(accumulator);
@@ -1016,9 +1063,7 @@ public class BigInt implements Comparable<BigInt>{
 					}
 					//accumulator = reverseArrayList(accumulator);
 				}
-				System.out.println("accumulator before normalize " + accumulator);
-				accumulator = normalizeArrayList(accumulator);
-				System.out.println("accumulator after normalize " + accumulator);
+				
 				
 				String accumulatorString = convertArrayListToString(accumulator);
 				BigInt accumulatorObject = new BigInt(accumulatorString);
@@ -1080,8 +1125,7 @@ public class BigInt implements Comparable<BigInt>{
 	    			A.set(i+1, carryTemp);
 	    		}catch(java.lang.IndexOutOfBoundsException IndexOutOfBounds) {
 	    			
-	    			System.out.println("Error " + carry);
-	    			System.out.println("Error sum " + A);
+	    			System.out.println("Error " + carry + "\t" + "A at Error " + A + "\t");
 	    			//	error will occur if x has been iterated through. The carry will be added to the end of the array 
 	    			A.add(carry);
 	    			System.out.println("Post error sum " + A);
@@ -1106,6 +1150,117 @@ public class BigInt implements Comparable<BigInt>{
 		char[] xChars = x.chars();
 		
 	}
+	
+	
+	public BigInt multiply2(BigInt multi)
+    {
+		//not used
+        BigInt int_to_return = new BigInt();;
+        ArrayList<Integer> digits = new ArrayList<Integer>();
+        boolean sign = true;
+        String signStr = "";
+        int first;
+        int second;
+        int sum;
+        int carry = 0;
+        int count = 0;
+        this.digits = reverseArrayList(this.digits);
+        multi.digits = reverseArrayList(multi.digits);
+        for (int i=0; i<this.digits.size(); i++)
+        {
+            first = this.digits.get(i);
+            for (int j=0; j<multi.digits.size(); j++)
+            {
+                second = multi.digits.get(j);
+                sum = (first * second) + carry;
+                if (sum > 9)
+                {
+                    carry = sum/10;
+                    sum = sum%10;
+                }
+                else {
+                	carry = 0;
+                }
+               
+                digits.add(0, sum);   
+                
+                System.out.println("sum " + sum);
+                System.out.println("digits " + digits);
+                /*
+                if (j+i >= digits.size())
+                {
+                    digits.add(j+i, sum);
+                    if (j == multi.digits.size()-1 && carry != 0)
+                        digits.add(carry);
+                }
+                else
+                {
+                    sum += digits.get(j+i);
+                    if (sum>9)
+                    {
+                        carry += sum/10;
+                        sum =sum%10;
+                    }
+                    digits.set(j+i, sum);
+                }
+                */
+            }
+            
+            String digitsStr = convertArrayListToString(digits);
+            if(count == 0) {
+            	int_to_return = new BigInt(digitsStr);
+            }
+            else {
+            	BigInt tempBigInt = new BigInt(digitsStr);
+            	int_to_return = int_to_return.add(tempBigInt);
+            }
+            
+            System.out.println("int_to_return inside loop " + int_to_return);
+            
+            count++;
+            digits.clear();
+            for(int k=0; k<count; k++) {
+            	digits.add(0);
+            }
+        }
+        
+        this.digits = reverseArrayList(this.digits);
+        multi.digits = reverseArrayList(multi.digits); 
+        
+    	/*
+		 *	if this.positive and bigInt.positive == true (a) * (b) or this.positive and bigInt.positive == false (-a) * (-b)
+		 * 		a * b -> final answer is +
+		 * 
+		 */
+		if(((this.sign == true) && (multi.sign == true)) || ((this.sign == false) && (multi.sign == false))) {
+			sign = true;
+		}
+		/*
+		 *	if this.positive == false and bigInt.positive == true	(-a) * (+b)
+		 *		a * b -> final answer is -	
+		 *			
+		 */
+		else if(((this.sign == false) && (multi.sign == true))) {
+			sign = false;
+		}
+		/*
+		 *	if this.positive == true and bigInt.positive == false	(+a) * (-b)
+		 *		a * b -> final answer is -			
+		 */	
+		else if(((this.sign == true) && (multi.sign == false))) {
+			sign = false;
+		}
+		
+		String digitString = convertArrayListToString(digits);
+		
+		if(sign == false) {
+			signStr = "-";
+		}
+		
+		digitString = signStr + digitString;
+		
+        return new BigInt(digitString);
+    }
 
 	
 	
