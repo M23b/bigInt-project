@@ -1145,16 +1145,9 @@ public class BigInt{
 	return newArray;
 	}
 	
-	
-	public void times(BigInt x) {
-		char[] xChars = x.chars();
-		
-	}
-	
-	
 	public BigInt multiply2(BigInt multi)
     {
-		//not used
+		//this method is not used
         BigInt int_to_return = new BigInt();;
         ArrayList<Integer> digits = new ArrayList<Integer>();
         boolean sign = true;
